@@ -1,8 +1,8 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, ElementRef, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Card, Player } from './card.interface';
 import { GameSocket } from '../../services/socket-client/game-socket';
-import { Subscription } from 'rxjs';
+import { single, Subscription } from 'rxjs';
 import type  { COLORS } from 'interfaces';
 import { CardCompnent } from '../card/card';
 import { Leaderboard } from '../leaderboard/leaderboard';
@@ -14,6 +14,7 @@ import {
   style,
   animate
 } from '@angular/animations';
+import { Sign } from 'crypto';
  
 
 @Component({
@@ -24,23 +25,24 @@ import {
   styleUrls: ['./game.scss'],
    animations: [
     trigger('cardAnim', [
-      // 🎴 CARD DRAW (ENTER)
+     
       transition(':enter', [
+        
         style({
           opacity: 0,
           transform: 'translate(-400px, -300px) scale(0.4) rotate(-20deg)'
         }),
-        animate('400ms cubic-bezier(.25,.8,.25,1)', style({
+        animate('1000ms cubic-bezier(.25,.8,.25,1)', style({
           opacity: 1,
           transform: 'translate(0,0) scale(1) rotate(0)'
         }))
       ]),
 
-      // 🗑️ CARD DISCARD (LEAVE)
-      transition(':leave', [
-        animate('300ms ease-in', style({
+      
+      transition(':leave', [ 
+        animate('1000ms ease-in', style({
           opacity: 0,
-          transform: 'translate(300px, -200px) scale(0.3) rotate(30deg)'
+          transform: 'translate({{x}}px, {{y}}px) scale(0.8) rotate(45deg)'
         }))
       ])
     ])
@@ -57,12 +59,20 @@ export class GameRoomComponent {
   chnageContextColors=signal<boolean>(false);
   isGameEnd=signal<boolean>(false);
   isLoading=signal<boolean>(false);
+  drawnCard=signal<Card|undefined>(undefined);
+@ViewChild('discardPile', { read: ElementRef })
+discardPile!: ElementRef<HTMLElement>;
+drawnCardHTML=signal<HTMLElement|undefined>(undefined);
 
+
+lastDiscardVector = { x: 0, y: 0 };
   
   
   
   constructor
-  ( private socketService:GameSocket ) {}
+  ( private socketService:GameSocket ) {
+    console.log("game component loaded");
+  }
 
   
   myHand = signal<Card[]>([
@@ -86,7 +96,7 @@ export class GameRoomComponent {
     isUnoSaid:true
   })));
 
-  topCard = signal<Card>({ id: 'top', color: 'BLUE', value: '8' ,points:8});
+  topCard = signal<Card>({ id: 'top', color: 'BLACK', value: 'wild-draw-four' ,points:8});
   roomName=signal<string>("demo_room");
   isUnoSaid=signal<boolean>(true);
   playerName=signal<string>("Me");
@@ -121,7 +131,7 @@ export class GameRoomComponent {
   { this.isLoading.set(true);
     setTimeout(()=>{
       this.isLoading.set(false);
-    },3000)
+    },2000)
     this.socketService.gameInit();
 
     this.gameStateSub=this.socketService.onGameState("GAME_STATE")
@@ -135,6 +145,7 @@ export class GameRoomComponent {
         this.activeContext.set(data.state.activeContext);
         //console.log("active context :"+data.state.activeContext);
         this.topCard.set(data.state.topCard);
+         
         //console.log("top card :"+data.state.topCard);
         this.myHand.set(data.state.myCards);
       
@@ -171,8 +182,10 @@ export class GameRoomComponent {
     this.gameResultSub=this.socketService.onGameResult("GAME_RESULT")
     .subscribe({
       next:(data)=>{
-        this.gameResult.set(data.state.state);
-        this.playerId.set(data.state.playerId);
+        this.gameResult.set(data.state);
+        console.log("gameReuslt"+this.gameResult);
+        this.playerId.set(data.playerId);
+        console.log("player id: ",this.playerId());
         console.log("updating game result");
         
       },
@@ -192,10 +205,23 @@ export class GameRoomComponent {
     this.socketService.drawCard();
   }
 
-  playCard(card: Card) {
+  playCard(card: Card , cardEl: HTMLElement) {
     if (!this.isMyTurn()) return;
     console.log('Playing:', card);
+    this.drawnCard.set(card);
+    this.drawnCardHTML.set(cardEl)
     this.socketService.submitCard({ card});
+    const discardRect = this.discardPile.nativeElement.getBoundingClientRect();
+        const cardRect = this.drawnCardHTML()!.getBoundingClientRect();
+        console.log(  "cordinates of pixel" , discardRect.left-cardRect.left,
+            discardRect.top - cardRect.top);
+        this.lastDiscardVector = {
+            x: discardRect.left - cardRect.left,
+            y: discardRect.top - cardRect.top
+          };
+   
+   
+      
      
   }
 
@@ -290,5 +316,22 @@ onColorSelect(color:COLORS)
 }
 
 
+
+// playCard(card: any, cardEl: HTMLElement) {
+//   const cardRect = cardEl.getBoundingClientRect();
+//   const discardRect = this.discardPile.nativeElement.getBoundingClientRect();
+
+//   this.lastDiscardVector = {
+//     x: discardRect.left - cardRect.left,
+//     y: discardRect.top - cardRect.top
+//   };
+
+//   // remove card from state AFTER computing delta
+//   this.myHand.update(hand => hand.filter(c => c.id !== card.id));
+// }
+
+
+
 }
- 
+
+  

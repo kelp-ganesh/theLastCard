@@ -185,7 +185,8 @@ export class UnoGame {
       }
       if(this.pendingAction.Type == "none")
       { 
-        this.currentPlayerIndex=(this.currentPlayerIndex+1*this.direction)%this.players.length;
+        this.currentPlayerIndex=(((this.currentPlayerIndex+this.direction)%this.players.length)+this.players.length)%this.players.length;
+
        
        
         

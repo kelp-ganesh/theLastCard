@@ -77,20 +77,20 @@
     <div class="relative z-10 flex items-center gap-8">
       
       <div  #drawDeck (click)="drawCard()" 
-           class="w-24 h-36 bg-slate-800 rounded-lg border-2 border-slate-600 shadow-xl cursor-pointer hover:-translate-y-2 transition-transform flex items-center justify-center">
-         <div class="w-20 h-32 bg-red-500 rounded flex items-center justify-center">
+           class="w-32 h-48 bg-slate-800 rounded-lg border-2 border-slate-600 shadow-xl cursor-pointer hover:-translate-y-2 transition-transform flex items-center justify-center">
+         <div class="w-28 h-44 bg-red-500 rounded flex items-center justify-center">
            <span class="text-yellow-400 font-bold -rotate-12 italic text-2xl drop-shadow-md">UNO</span>
          </div>
       </div>
 
       <div class="absolute inset-0 -z-10 flex items-center justify-center pointer-events-none">
-         <div class="scale-125 w-64 h-64 border-4 border-white/10 rounded-full animate-spin-slow"
+         <div class="scale-150 w-64 h-64 border-4 border-white/10 rounded-full animate-spin-slow"
               [ngClass]="{'direction-reverse': direction() === 'CCW'}">
-            <div class="absolute top-1/2 -right-3 w-0 h-0 border-l-[17px] border-l-white/20 border-y-[8px] border-y-transparent"></div>
+            <div class="absolute top-1/2 -right-3 w-0 h-0 border-l-[17px] border-l-white/30 border-y-[8px] border-y-transparent"></div>
          </div>
       </div>
 
-      <div #discardPile class="relative w-24 h-36 rounded-xl border-4 border-white shadow-2xl cursor-pointer "
+      <div #discardPile class="relative w-32 h-48 rounded-xl border-4 border-white shadow-2xl cursor-pointer "
            [ngClass]="getColorClass(topCard().color)">
         <app-card [card]="topCard()" /> 
       </div>
@@ -121,8 +121,9 @@
       
       <!-- convert to @for -->
        @for(card of myHand() ; track card.id){
-      <div  @cardAnim
-           (click)="playCard(card)"
+      <div #cardEl 
+            [@cardAnim]="{ value: '', params: lastDiscardVector }"
+           (click)="playCard(card,cardEl)"
            class="relative w-32 h-48 rounded-xl border-4 border-white shadow-2xl cursor-pointer hover:-translate-y-12 hover:rotate-0 hover:z-50 transition-all duration-300 origin-bottom"
            [ngClass]="getColorClass(card.color)">
            
@@ -133,7 +134,8 @@
       {
         <div class="relative -top-50 -right-20 bg-green-600 text-white text-md font-bold w-24 h-10 flex items-center justify-center rounded-xl border-2 border-slate-900">
                  UNO !!
-        </div>}
+        </div>
+      }
     </div>
     @if(isMyTurn()){
           <div class="mb-5" [ngClass]="isMyTurn() ? 'fixed ml-200 px-2 py-1 bg-gradient-to-br from-yellow-400 to-orange-600 text-white font-black italic transition-all rounded-2xl hover:scale-110 cursor-pointer ' : null" (click)="callSkip()">Skip Turn</div>

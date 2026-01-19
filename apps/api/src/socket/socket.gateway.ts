@@ -202,7 +202,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
       this.server.emit('lobby_update', { lobby: this.Lobby,player:player });
       if(lobby && lobby?.max_size===lobby?.players.length)
       { console.log("lobby with id "+lobby.name+" is closed");
-        this.Lobby.filter((lb)=> lb.id!=lobby.id);
+        this.Lobby=this.Lobby.filter((lb)=> lb.id!=lobby.id);
         const game=new UnoGame(lobby.players,lobby.name);
         this.Games.push(game);
         const sockets=this.sendToGame(game.id,this.Games);

@@ -146,13 +146,13 @@ export class LobbyComponent {
     this.sokcetService.createRoom(name,+max);
     this.joinedLobby.set('admin')
     this.toggleModal();
-    // Navigate to /game/:newId
+    
   }
 
   joinRoom(id: string) {
     console.log('Joining Room:', id);
     this.sokcetService.joinRoom(id);
     this.joinedLobby.set(id);
-    // Navigate to /game/:id
+     
   }
 }
