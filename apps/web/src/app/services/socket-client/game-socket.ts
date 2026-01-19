@@ -71,6 +71,12 @@ export class GameSocket {
    return this.socket.fromEvent<any>(ROUTE_GAMEPAGE);
   }
 
+   onGameResult(GAME_RESULT:string):Observable<any>
+  {
+   return this.socket.fromEvent<any>(GAME_RESULT);
+  }
+
+
   onGameState(GAME_STATE:string):Observable<any>
   {
     return this.socket.fromEvent<any>(GAME_STATE);
@@ -120,7 +126,7 @@ export class GameSocket {
  }
 
  onUno()
- {
+ { console.log("uno said form socket");
   this.socket.emit("Uno_said");
  }
 
@@ -132,6 +138,11 @@ export class GameSocket {
   submitColor(color:string)
   {
     this.socket.emit('CHANGE_CONTEXT_COLOR',{color:color});
+  }
+
+  gameEnds()
+  {
+    this.socket.emit('GET_LEADERBOARD_DATA')
   }
 
   

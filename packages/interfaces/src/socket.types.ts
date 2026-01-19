@@ -35,7 +35,8 @@ export type GAME_STATE={
     opponents:opponent[],
     chnageContextColors:boolean,
     isUnoSaid:boolean,
-    avatarId:string
+    avatarId:string,
+    isEnd:boolean
 }
 
 

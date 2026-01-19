@@ -10,7 +10,6 @@
     "test": "ng test",
     "serve:ssr:web": "node dist/web/server/server.mjs"
   },
-  
   "prettier": {
     "printWidth": 100,
     "singleQuote": true,
@@ -26,8 +25,7 @@
   "private": true,
   "packageManager": "pnpm@9.0.0",
   "dependencies": {
-    "game-logic":"workspace:*",
-    "interfaces":"workspace:*",
+    "@angular/animations": "^21.1.0",
     "@angular/common": "^21.0.0",
     "@angular/compiler": "^21.0.0",
     "@angular/core": "^21.0.0",
@@ -38,6 +36,8 @@
     "@angular/ssr": "^21.0.4",
     "@primeuix/themes": "^2.0.2",
     "express": "^5.1.0",
+    "game-logic": "workspace:*",
+    "interfaces": "workspace:*",
     "ngx-socket-io": "^4.10.0",
     "primeicons": "^7.0.0",
     "primeng": "^21.0.3",

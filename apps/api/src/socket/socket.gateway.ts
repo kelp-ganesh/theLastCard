@@ -78,7 +78,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
       isUnoSaid:player.isUnoSaid,
       roomName:game.name,
       playerName:player.Username,
-      avatarId:player.avatarId
+      avatarId:player.avatarId,
+      isEnd:game.isEnd,
       
      }
       res.push(local)
@@ -243,6 +244,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
       { console.log("before the func call ")
           game.submitToDiscarded(data.card,player);
          const gameState:GAME_STATE[]=this.getGameState(client.id);
+ 
            
             console.log("game found"+game!.id);
             const sockets=this.sendToGame(game!.id,this.Games);
@@ -428,7 +430,35 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
                this.server.to(value).emit("GAME_STATE", {state:stateState})
              })};}
             }
+
+    
+     @SubscribeMessage('GET_LEADERBOARD_DATA')
+    onGameEnd(
+      @ConnectedSocket() client:Socket
+    ){
+
+      const player=this.finduser(client.id);
+      if(player)
+      {
+        const game=this.Games.find((game)=>game.players.some((player)=>player.socketId==client.id));
+        if(game && game.isEnd)
+        {
+            console.log("sending leaderboard state"+game!.id);
+            
+
+            client.emit("GAME_RESULT", {state:game,playerId:player.Userid});
+          
+            // sockets.forEach((value)=>{
+            //   this.server.to(value).emit("GAME_STATE", {state:game.players})
+            // });
+     
+        }
+      }
+
+
+    
                
+}
 }
 
 

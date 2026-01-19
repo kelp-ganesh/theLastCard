@@ -21,6 +21,7 @@ export class UnoGame {
     drawnCard:Card|undefined;
 
     allowchangeContextPlayerIndex:number=-1;
+    isEnd:boolean=false;
 
 
 
@@ -70,7 +71,7 @@ export class UnoGame {
     }
 
     timeExceeded()
-    {  this.cardDrawn=true;
+    {  this.cardDrawn=false;
        if(this.pendingAction.Type === "drawTwo")
               {
                 for(let i=0;i<this.pendingAction.count;i++)
@@ -125,7 +126,7 @@ export class UnoGame {
     }
     
     cardSubmitted(card:Card)
-    { this.cardDrawn=true;
+    { 
         if(card.value === "skip")
         {
           //currentINdex+=2;
@@ -165,12 +166,7 @@ export class UnoGame {
           this.discardPile.unshift(card);
           this.pendingAction={Type:"drawTwo",count:4};
 
-          // this.currentPlayerIndex=(this.currentPlayerIndex+1*this.direction)%this.players.length;
-          // this.players[this.currentPlayerIndex]!.Hand.push(this.drawPile.pop()!);
-          // this.players[this.currentPlayerIndex]!.Hand.push(this.drawPile.pop()!);
-          // this.players[this.currentPlayerIndex]!.Hand.push(this.drawPile.pop()!);
-          // this.players[this.currentPlayerIndex]!.Hand.push(this.drawPile.pop()!);
-          // this.currentPlayerIndex=(this.currentPlayerIndex+1*this.direction)%this.players.length;
+           
          
           return "wild-draw-four";
         }
@@ -211,9 +207,9 @@ export class UnoGame {
 
 
     submitToDiscarded(card:Card,player:Player)
-    { //console.log("hey i am in staring of submittodiscarded pile 1")
+    {  this.cardDrawn=false;
       if(player.index === this.currentPlayerIndex)
-      { // console.log("2")
+      {  
         if(this.cardDrawn && card===this.drawnCard || !this.cardDrawn)
         {//console.log("3")
             
@@ -226,6 +222,10 @@ export class UnoGame {
             //  console.log("removed card: ",c[0]?.id);
 
               player.Hand=player.Hand.filter((c)=>c.id !=card.id );
+              if(player.Hand.length == 0)
+              {
+                this.isEnd=true;
+              }
               console.log(player.Hand);
               // player.Hand.filter((c)=>c.id!=card.id);
               if(card.value !=="skip" && card.value !=="reverse" && card.value !=="draw-two" && card.value !=="wild" && card.value !=="wild-draw-four")
@@ -234,18 +234,7 @@ export class UnoGame {
                 this.discardPile.unshift(card);
                 this.cardDrawn=false;
                 this.drawnCard=undefined;
-                           this.currentPlayerIndex=(((this.currentPlayerIndex+this.direction)%this.players.length)+this.players.length)%this.players.length;
-
-                return {
-                  players:this.players,
-                  currentPlayerIndex:this.currentPlayerIndex,
-                  direction:this.direction,
-                  drawPile:this.drawPile,
-                  discardPile:this.discardPile,
-                  activeContext:this.activeContext,
-                  pendingAction:this.pendingAction,
-                  allowchangeContextPlayerIndex:this.allowchangeContextPlayerIndex
-                }
+                this.currentPlayerIndex=(((this.currentPlayerIndex+this.direction)%this.players.length)+this.players.length)%this.players.length;
               }
               else
               {
@@ -323,6 +312,14 @@ export class UnoGame {
         {
           player.isUnoSaid=true;
         }
+      }
+
+      getStateForLeaderboard(player:Player)
+      {
+          if(this.isEnd)
+          {
+            return 
+          }
       }
     }
 

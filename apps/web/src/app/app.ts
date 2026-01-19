@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { GameRoomComponent } from "./components/game/game";
-import { PrimeNG } from 'primeng/config';
+import { PrimeNG } from 'primeng/config'; 
 
 @Component({
   selector: 'app-root',

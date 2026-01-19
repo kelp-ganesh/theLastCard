@@ -1,5 +1,12 @@
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-md animate-fade-in">
-
+@if(isLoading())
+    {
+       <div class="h-screen flex items-center justify-center text-lg font-medium">
+        Game loading...
+  </div>
+    }
+@else
+{<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-md animate-fade-in">
+ 
   
 
   <div class="w-full max-w-2xl bg-slate-800 rounded-3xl shadow-2xl border border-slate-600 overflow-hidden">
@@ -94,4 +101,4 @@
 
   </div>
 
-</div>
+</div>}

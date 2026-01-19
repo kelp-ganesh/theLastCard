@@ -6,6 +6,14 @@ import { Subscription } from 'rxjs';
 import type  { COLORS } from 'interfaces';
 import { CardCompnent } from '../card/card';
 import { Leaderboard } from '../leaderboard/leaderboard';
+import { UnoGame } from 'game-logic';
+import { pipeline } from 'stream';
+import {
+  trigger,
+  transition,
+  style,
+  animate
+} from '@angular/animations';
  
 
 @Component({
@@ -13,17 +21,42 @@ import { Leaderboard } from '../leaderboard/leaderboard';
   standalone: true,
   imports: [CommonModule,CardCompnent,Leaderboard],
   templateUrl: './game.html',
-  styleUrls: ['./game.scss']
+  styleUrls: ['./game.scss'],
+   animations: [
+    trigger('cardAnim', [
+      // 🎴 CARD DRAW (ENTER)
+      transition(':enter', [
+        style({
+          opacity: 0,
+          transform: 'translate(-400px, -300px) scale(0.4) rotate(-20deg)'
+        }),
+        animate('400ms cubic-bezier(.25,.8,.25,1)', style({
+          opacity: 1,
+          transform: 'translate(0,0) scale(1) rotate(0)'
+        }))
+      ]),
+
+      // 🗑️ CARD DISCARD (LEAVE)
+      transition(':leave', [
+        animate('300ms ease-in', style({
+          opacity: 0,
+          transform: 'translate(300px, -200px) scale(0.3) rotate(30deg)'
+        }))
+      ])
+    ])
+  ]
 })
 export class GameRoomComponent {
    
   private gameStateSub!:Subscription;
+  private gameResultSub!:Subscription;
   direction = signal<'CW' | 'CCW'>('CCW');
   isMyTurn = signal<boolean>(true);
   activeContext=signal<COLORS>('GREEN');
   allowchangeContextPlayerIndex=signal<boolean>(false);
   chnageContextColors=signal<boolean>(false);
-  isGameEnd=signal<boolean>(true);
+  isGameEnd=signal<boolean>(false);
+  isLoading=signal<boolean>(false);
 
   
   
@@ -39,7 +72,7 @@ export class GameRoomComponent {
     { id: '4', color: "BLACK", value: 'skip' ,points:50},
     { id: '5', color: 'BLACK', value: "skip" ,points:8},
     { id: '6', color: 'BLACK', value: "skip" ,points:0},
-    { id: '7', color: 'BLUE', value: '7' ,points:7},
+     
   ]);
  
    
@@ -58,6 +91,9 @@ export class GameRoomComponent {
   isUnoSaid=signal<boolean>(true);
   playerName=signal<string>("Me");
   avatarId=signal<string>("2");
+  isEnd=signal<boolean>(false);
+  gameResult=signal<UnoGame|undefined>(undefined);
+  playerId=signal<string>('');
 
 
   
@@ -67,7 +103,7 @@ export class GameRoomComponent {
 
     case 'top':       return 'top-4 left-1/2 -translate-x-1/2';
 
-    case 'left':      return 'left-4 top-1/2 -translate-y-1/2 flex-row-reverse'; // Rotate layout for side
+    case 'left':      return 'left-4 top-1/2 -translate-y-1/2 flex-row-reverse'; 
 
     case 'right':     return 'right-4 top-1/2 -translate-y-1/2 flex-row';
 
@@ -80,46 +116,49 @@ export class GameRoomComponent {
   }
 
 }
-
-// &lt;div class="card-back ..."
-
-//      \[ngClass\]="{
-
-//         'rotate-90': player.position === 'left' || player.position === 'right'
-
-//      }"&gt;
+ 
   ngOnInit()
-  {
+  { this.isLoading.set(true);
+    setTimeout(()=>{
+      this.isLoading.set(false);
+    },3000)
     this.socketService.gameInit();
 
     this.gameStateSub=this.socketService.onGameState("GAME_STATE")
     .subscribe({
       next:(data)=>{
-        console.log("game state updated"+data);
+        //console.log("game state updated"+data);
         this.direction.set((data.state.direction ==1)? "CW" : "CCW" );
-        console.log("direction :"+data.state.direction);
+        //console.log("direction :"+data.state.direction);
         this.isMyTurn.set(data.state.isMyturn);
-        console.log("is my turn :"+data.state.isMyturn);
+        //console.log("is my turn :"+data.state.isMyturn);
         this.activeContext.set(data.state.activeContext);
-        console.log("active context :"+data.state.activeContext);
+        //console.log("active context :"+data.state.activeContext);
         this.topCard.set(data.state.topCard);
-        console.log("top card :"+data.state.topCard);
+        //console.log("top card :"+data.state.topCard);
         this.myHand.set(data.state.myCards);
       
         data.state.myCards.forEach((element:any) => {
-          console.log("card: "+element.id);
+          //console.log("card: "+element.id);
         });
         this.allowchangeContextPlayerIndex.set(data.state.allowchangeContextPlayerIndex);
-        console.log("allow change context player index :"+data.state.allowchangeContextPlayerIndex);
+        //console.log("allow change context player index :"+data.state.allowchangeContextPlayerIndex);
         this.opponents.set(data.state.opponents)
-        console.log("opponents :"+data.state.opponents);
+       // console.log("opponents :"+data.state.opponents);
         this.chnageContextColors.set(data.state.chnageContextColors);
-        console.log("change context colors :"+data.state.chnageContextColors);
+        //console.log("change context colors :"+data.state.chnageContextColors);
         this.playerName.set(data.state.playerName)
-        console.log("player Name",this.playerName);
+        //console.log("player Name",this.playerName);
         this.roomName.set(data.state.roomName);
         this.avatarId.set(data.state.avatarId);
         this.isUnoSaid.set(data.state.isUnoSaid);
+        this.isEnd.set(data.state.isEnd);
+       
+        console.log("isGame end: ",this.isEnd())
+         if(this.isEnd())
+      {
+        this.socketService.gameEnds();
+      }
         
         
         
@@ -128,8 +167,25 @@ export class GameRoomComponent {
         console.log("error while updating game state")
       }
     })
+
+    this.gameResultSub=this.socketService.onGameResult("GAME_RESULT")
+    .subscribe({
+      next:(data)=>{
+        this.gameResult.set(data.state.state);
+        this.playerId.set(data.state.playerId);
+        console.log("updating game result");
+        
+      },
+      error:(err)=>{
+        console.log("error while updating game result state")
+      }
+    })
+    
   }
   
+  
+
+
   drawCard() {
     if (!this.isMyTurn()) return;
     console.log('Drawing a card...');
@@ -144,7 +200,9 @@ export class GameRoomComponent {
   }
 
   callUno() {
-    console.log('UNO SAID!');
+   if (!this.isMyTurn()) return;
+    console.log('uno for .ts a card...');
+    this.socketService.onUno(); 
   }
 
   callSkip()
@@ -233,4 +291,4 @@ onColorSelect(color:COLORS)
 
 
 }
-
+ 
