@@ -1,0 +1,143 @@
+ 
+ <a routerLink="['/']">
+  <div class="flex items-center gap-2 fixed z-40 top-7 left-7"  >
+     
+      <div class="w-8 h-10 bg-red-600 rounded-sm -rotate-12 shadow-lg flex items-center justify-center">
+        <span class="font-bold italic text-yellow-400 text-xs">U</span>
+      </div>
+      <div class="w-8 h-10 bg-yellow-400 rounded-sm rotate-6 -ml-4 shadow-lg z-10 flex items-center justify-center">
+        <span class="font-bold italic text-red-600 text-xs">NO</span>
+      </div>
+      <span class="text-2xl font-black italic tracking-widest ml-3">theLastCard</span>
+    </div>
+    </a>
+    
+      <div class="absolute inset-0 flex items-center justify-center z-1 pointer-events-none">
+        <h1 class="text-9xl font-black text-white italic opacity-5 select-none tracking-widest">
+         {{roomName()}}
+        </h1>
+      
+    </div>
+<div class="h-screen w-full bg-slate-900 overflow-hidden flex flex-col relative">
+
+  <div class="flex-1 relative flex items-center justify-center">
+    
+    <div class="absolute inset-0 pointer-events-none mt-48">
+      <div *ngFor="let player of opponents(); let i = index"
+           class="absolute transition-all duration-500"
+            
+           [ngStyle]="getOpponentStyle(i, opponents().length)">
+           
+           <div class="flex flex-col items-center pointer-events-auto" 
+                [class.opacity-50]="!player.isTurn">
+             
+             <div class="w-16 h-16 rounded-full border-4 relative bg-white"
+                  [ngClass]="player.isTurn ? 'border-yellow-300 active:scale-95 transition-all animate-pulse scale-110' : 'border-gray-600'">
+               <img [src]="'assets/avatars/p'+player.avatarUrl+'.png'" class="w-full h-full rounded-full" />
+               
+               <div class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-slate-900">
+                 {{ player.cardCount }}
+               </div>
+               @if(player.isUnoSaid)
+                {<div class="absolute -top-2 -right-20 bg-green-600 text-white text-xs font-bold w-14 h-6 flex items-center justify-center rounded-xl border-2 border-slate-900">
+                 UNO !!
+               </div>}
+             </div>
+             
+             <div class="mt-2 bg-black/50 px-2 py-0.5 rounded text-white text-xs backdrop-blur-sm">
+               {{ player.name }}
+             </div>
+           </div>
+      </div>
+    </div>
+    @if(isGameEnd())
+    {
+      <app-leaderboard  ></app-leaderboard>
+    }
+    <div class="relative z-10 flex items-center gap-8">
+      
+      <div (click)="drawCard()" 
+           class="w-24 h-36 bg-slate-800 rounded-lg border-2 border-slate-600 shadow-xl cursor-pointer hover:-translate-y-2 transition-transform flex items-center justify-center">
+         <div class="w-20 h-32 bg-red-500 rounded flex items-center justify-center">
+           <span class="text-yellow-400 font-bold -rotate-12 italic text-2xl drop-shadow-md">UNO</span>
+         </div>
+      </div>
+
+      <div class="absolute inset-0 -z-10 flex items-center justify-center pointer-events-none">
+         <div class="scale-125 w-64 h-64 border-4 border-white/10 rounded-full animate-spin-slow"
+              [ngClass]="{'direction-reverse': direction() === 'CCW'}">
+            <div class="absolute top-1/2 -right-3 w-0 h-0 border-l-[17px] border-l-white/20 border-y-[8px] border-y-transparent"></div>
+         </div>
+      </div>
+
+      <div class="relative w-24 h-36 rounded-xl border-4 border-white shadow-2xl cursor-pointer "
+           [ngClass]="getColorClass(topCard().color)">
+        <app-card [card]="topCard()" /> 
+      </div>
+
+    </div>
+  </div>
+
+  <div class="h-[280px] w-full bg-gradient-to-t from-black/90 to-transparent flex flex-col items-center justify-end pb-6 relative">
+    @if(isMyTurn())
+    {<button (click)="callUno()"
+            class="absolute right-10 top-0 bg-gradient-to-br from-yellow-400 to-orange-600 text-white font-black italic text-xl px-6 py-4 rounded-full shadow-lg hover:scale-110  ">
+       UNO!
+    </button>}
+    @else {
+      <button (click)="callChallenge()"
+            class="absolute right-10 top-0 bg-gradient-to-br from-yellow-400 to-orange-600 text-white font-black italic text-xl px-6 py-4 rounded-full shadow-lg hover:scale-110  ">
+       CHALLENGE!
+    </button>
+    }
+
+    @if(isMyTurn()){
+    <div class="mb-5" [ngClass]="isMyTurn() ? 'px-2 py-1 bg-gradient-to-br from-yellow-400 to-orange-600 text-white font-black italic transition-all rounded-2xl animate-pulse scale-110' : null">Your Turn</div>
+    }
+    <div class="flex justify-center items-end -space-x-12 hover:space-x-1 transition-all duration-300 px-4"  >
+      
+      
+      
+      
+      <!-- convert to @for -->
+       @for(card of myHand() ; track card.id){
+      <div 
+           (click)="playCard(card)"
+           class="relative w-32 h-48 rounded-xl border-4 border-white shadow-2xl cursor-pointer hover:-translate-y-12 hover:rotate-0 hover:z-50 transition-all duration-300 origin-bottom"
+           [ngClass]="getColorClass(card.color)">
+           
+            <app-card [card]="card" /> 
+      </div>
+    }
+       @if(isUnoSaid())
+      {
+        <div class="relative -top-50 -right-20 bg-green-600 text-white text-md font-bold w-24 h-10 flex items-center justify-center rounded-xl border-2 border-slate-900">
+                 UNO !!
+        </div>}
+    </div>
+    @if(isMyTurn()){
+          <div class="mb-5" [ngClass]="isMyTurn() ? 'fixed ml-200 px-2 py-1 bg-gradient-to-br from-yellow-400 to-orange-600 text-white font-black italic transition-all rounded-2xl hover:scale-110 cursor-pointer ' : null" (click)="callSkip()">Skip Turn</div>
+    }
+    <div class="mt-4 text-white/50 text-sm font-semibold">{{playerName()}}</div>
+
+  </div>
+
+  
+
+
+  @if((allowchangeContextPlayerIndex() && isMyTurn() && chnageContextColors()) )
+  {
+    <div class="absolute inset-0 bg-black/70 flex items-center justify-center z-20">
+      <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl flex flex-col items-center gap-6">
+        <h2 class="text-2xl font-bold text-white mb-4">Choose a color</h2>
+        <div class="flex gap-6">
+          <button (click)="onColorSelect('RED')" class="w-16 h-16 bg-red-600 rounded-full border-4 border-white shadow-lg hover:scale-110 transition-transform"></button>
+          <button (click)="onColorSelect('BLUE')" class="w-16 h-16 bg-blue-600 rounded-full border-4 border-white shadow-lg hover:scale-110 transition-transform"></button>
+          <button (click)="onColorSelect('GREEN')" class="w-16 h-16 bg-green-600 rounded-full border-4 border-white shadow-lg hover:scale-110 transition-transform"></button>
+          <button (click)="onColorSelect('YELLOW')" class="w-16 h-16 bg-yellow-400 rounded-full border-4 border-white shadow-lg hover:scale-110 transition-transform"></button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+ 

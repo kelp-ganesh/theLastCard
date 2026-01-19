@@ -1,0 +1,1 @@
+export const ACCESS_TOKEN_MAX_AGE = 15 * 60 * 1000; 

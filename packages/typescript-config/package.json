@@ -6,4 +6,8 @@
   "publishConfig": {
     "access": "public"
   }
+  ,
+  "exports":{
+    
+  }
 }

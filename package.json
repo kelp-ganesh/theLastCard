@@ -13,6 +13,9 @@
     "turbo": "^2.7.4",
     "typescript": "5.9.2"
   },
+  "paths": {
+      "database": ["packages/database/src"]
+    },
   "packageManager": "pnpm@9.0.0",
   "engines": {
     "node": ">=18"

@@ -1,0 +1,149 @@
+<div class="min-h-screen w-full bg-slate-900 font-sans relative">
+  
+
+  <nav class="sticky top-0 z-40 w-full bg-slate-900/80 backdrop-blur-md border-b border-white/5 px-6 py-4 flex items-center justify-between">
+    
+      <a routerLink="/">
+  <div class="flex items-center gap-2 absolute top-7 left-7"  >
+      <div class="w-8 h-10 bg-red-600 rounded-sm -rotate-12 shadow-lg flex items-center justify-center">
+        <span class="font-bold italic text-yellow-400 text-xs">U</span>
+      </div>
+      <div class="w-8 h-10 bg-yellow-400 rounded-sm rotate-6 -ml-4 shadow-lg z-10 flex items-center justify-center">
+        <span class="font-bold italic text-red-600 text-xs">NO</span>
+      </div>
+      <span class="text-2xl font-black italic tracking-widest ml-3">theLastCard</span>
+    </div>
+    </a> 
+  
+
+    <div class="flex items-center gap-4">
+      <div class="text-right hidden md:block">
+        <div class="text-white font-bold text-sm">{{ username() }}</div>
+        <!-- <div class="text-yellow-400 text-xs font-semibold">Lvl {{ currentUser.level }} • {{ currentUser.wins }} Wins</div> -->
+      </div>
+      <img   [src]="'assets/avatars/p'+avatarId()+'.png'" class="w-10 h-10 rounded-full border-2 border-slate-600 bg-slate-800">
+      
+      <button class="text-slate-400 hover:text-white transition-colors" (click)="onLogout()">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-4 py-8 relative z-0">
+
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-10">
+      
+      <div class="relative w-full md:w-96">
+        <input type="text" placeholder="Search rooms..." 
+               class="w-full bg-slate-800 border border-slate-700 rounded-full py-3 pl-12 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-white-200 focus:border-transparent transition-all placeholder-slate-500">
+        <svg class="w-5 h-5 text-slate-500 absolute left-4 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      </div>
+
+      <button (click)="toggleModal()"
+      [disabled]="joinedLobby() !='' " 
+              class="w-full md:w-auto bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-blue-500/30 transform transition hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ml-1">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        Create Room
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      @for (room of rooms(); track room.id) {
+        
+        <div class="bg-slate-800/50 backdrop-blur border border-white/5 rounded-2xl p-5 hover:bg-slate-800 transition-all duration-300 group hover:border-white/10 relative overflow-hidden">
+          
+          <div class="absolute top-0 left-0 w-1 h-full" 
+               [ngClass]="room.status === 'WAITING' ? 'bg-green-500' : 'bg-orange-500'"></div>
+
+          <div class="flex justify-between items-start mb-4 pl-3">
+            <div>
+              <h3 class="text-white font-bold text-lg truncate pr-2">{{ room.name }}</h3>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-xs font-medium px-2 py-0.5 rounded-full border"
+                      [ngClass]="room.status === 'WAITING' 
+                        ? 'bg-green-500/10 text-green-400 border-green-500/20' 
+                        : 'bg-orange-500/10 text-orange-400 border-orange-500/20'">
+                   {{ room.status === 'WAITING' ? 'Waiting' : 'In Progress' }}
+                </span>
+                <!-- <span *ngIf="room.isPrivate" class="text-xs text-slate-400 flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                  Private
+                </span> -->
+              </div>
+            </div>
+            <!-- <img [src]="'https://api.dicebear.com/7.x/avataaars/svg?seed=' + room.hostAvatar" class="w-10 h-10 rounded-full border border-slate-600 bg-slate-700"> -->
+          </div>
+
+          <div class="pl-3 mb-6">
+             <div class="flex justify-between text-xs text-slate-400 mb-1">
+               <span>Players</span>
+               <span>{{ room.players }} / {{ room.maxPlayers }}</span>
+             </div>
+             <div class="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+               <div class="h-full rounded-full transition-all duration-500"
+                    [style.width.%]="(room.players / room.maxPlayers) * 100"
+                    [ngClass]="room.players >= room.maxPlayers ? 'bg-red-500' : 'bg-blue-500'"></div>
+             </div>
+          </div>
+
+          <button (click)="joinRoom(room.id)"
+                  [disabled]=" joinedLobby() !='' "
+                  class="w-full py-2 rounded-lg font-bold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed ml-1"
+                  [ngClass]="room.players >= room.maxPlayers 
+                    ? 'bg-slate-700 text-slate-400' 
+                    : 'bg-white text-slate-900 hover:bg-yellow-400'">
+            {{ room.players >= room.maxPlayers ? 'Room Full' : joinedLobby() !='' ? 'Joined' : 'Join Game' }}
+          </button>
+
+        </div>
+      }
+
+    </div>
+  </main>
+
+  @if (showCreateModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center px-4">
+      
+      <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" 
+           (click)="toggleModal()"></div>
+      
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-md p-6 relative z-10 shadow-2xl animate-scale-in">
+        
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-white">Create Room</h2>
+          <button (click)="toggleModal()" class="text-slate-400 hover:text-white">✕</button>
+        </div>
+
+        <form #roomForm="ngForm" (ngSubmit)="createRoom(roomName.value, maxPlayers.value,false)">
+          
+          <div class="mb-4">
+            <label class="block text-sm text-slate-400 mb-2">Room Name</label>
+            <input type="text" #roomName required
+                   class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-blue-500 focus:border-blue-500" 
+                   placeholder="e.g. Sunday Funday">
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm text-slate-400 mb-2">Max Players (2-5)</label>
+            <input type="number" #maxPlayers value="4" min="2" max="5"
+                   class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+          <!-- <div class="mb-6 flex items-center gap-3">
+            <input type="checkbox" #isPrivate id="private" class="w-5 h-5 rounded bg-slate-900 border-slate-700 text-blue-500 focus:ring-blue-500">
+            <label for="private" class="text-slate-300 select-none cursor-pointer">Private Room (Password Protected)</label>
+          </div> -->
+
+          <div class="flex gap-3">
+            <button type="button" (click)="toggleModal()" class="flex-1 py-3 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700">Cancel</button>
+            <button type="submit" class="flex-1 py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-yellow-400">Create</button>
+          </div>
+
+        </form>
+        <p-toast />
+      </div>
+    </div>
+  }
+
+</div>
