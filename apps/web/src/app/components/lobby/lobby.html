@@ -19,7 +19,7 @@
     <div class="flex items-center gap-4">
       <div class="text-right hidden md:block">
         <div class="text-white font-bold text-sm">{{ username() }}</div>
-        <!-- <div class="text-yellow-400 text-xs font-semibold">Lvl {{ currentUser.level }} • {{ currentUser.wins }} Wins</div> -->
+        
       </div>
       <img   [src]="'assets/avatars/p'+avatarId()+'.png'" class="w-10 h-10 rounded-full border-2 border-slate-600 bg-slate-800">
       
@@ -118,23 +118,19 @@
         <form #roomForm="ngForm" (ngSubmit)="createRoom(roomName.value, maxPlayers.value,false)">
           
           <div class="mb-4">
-            <label class="block text-sm text-slate-400 mb-2">Room Name</label>
+            <label class="block text-sm text-slate-400 mb-2 italic">Room Name</label>
             <input type="text" #roomName required
                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-blue-500 focus:border-blue-500" 
                    placeholder="Enter room name">
           </div>
 
           <div class="mb-4">
-            <label class="block text-sm text-slate-400 mb-2">Max Players (2-5)</label>
+            <label class="block text-sm text-slate-400 mb-2 italic">Max Players (2-5)</label>
             <input type="number" #maxPlayers value="4" min="2" max="5"
-                   class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-blue-500 focus:border-blue-500">
+                   class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-blue-500 focus:border-blue-500 italic">
           </div>
 
-          <!-- <div class="mb-6 flex items-center gap-3">
-            <input type="checkbox" #isPrivate id="private" class="w-5 h-5 rounded bg-slate-900 border-slate-700 text-blue-500 focus:ring-blue-500">
-            <label for="private" class="text-slate-300 select-none cursor-pointer">Private Room (Password Protected)</label>
-          </div> -->
-
+         
           <div class="flex gap-3">
             <button type="button" (click)="toggleModal()" class="flex-1 py-3 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700">Cancel</button>
             <button type="submit" class="flex-1 py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-yellow-400">Create</button>

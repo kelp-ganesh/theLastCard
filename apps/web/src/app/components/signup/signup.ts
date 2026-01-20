@@ -19,38 +19,29 @@ export class SignupComponent {
   private authService=inject(HttpService);
   private messageService=inject(MessageService);
   private routerLink=inject(Router);
+  selectedAvatarSeed = signal<number>(1);
+  
+  
+  
   signupForm = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.minLength(3)]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     
   });
-  //  show()
-  //  {
-  //  this.messageService.add({ severity: 'success', summary: 'Info', detail: 'Message Content' });
-  //  }    
   
   
-  selectedAvatarSeed = signal<number>(1);
-
-  selectAvatar(index: number) {
-   return index;
-  }
-
-  
-
-  // 3. Submit Action
-  onSubmit() {
+ onSubmit() {
     if (this.signupForm.valid) {
       const payload = {
         ...this.signupForm.value,
         
       };
-      console.log('Registering User:', payload);
+      //console.log('Registering User:', payload);
       
       this.authService.onSignup({name:payload.username!,email:payload.email!,password:payload.password!,avatarId:this.selectedAvatarSeed().toString()}).subscribe({
         next:(res)=>{
-          console.log('Signup Successful:', res);
+          
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Signup Successful' });
         setTimeout(() => {
            this.routerLink.navigate(['/signin']);

@@ -2,10 +2,11 @@ import { Component, Input, signal, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Card, Player } from 'game-logic';
 import { GameSocket } from '../../services/socket-client/game-socket';
+import { Spinner } from '../spinner/spinner';
 
 @Component({
   selector: 'app-leaderboard',
-  imports: [CommonModule],
+  imports: [CommonModule,Spinner],
   templateUrl: './leaderboard.html',
   styleUrl: './leaderboard.css',
 })
@@ -53,7 +54,7 @@ export class Leaderboard {
  
 
   exitGame() {
-      window.location.href = '/';
+      window.location.href = '/lobby';
     }
 
 }
@@ -71,4 +72,4 @@ export function calculateHandScore(hand: Card[]): number {
 
 }
 
-// ?when user go to game page up to 3 seconds he have to show Game loading.. and them should render the acual ui means we have to mask the ui intially for 3 seconds so how to do that 
+ 

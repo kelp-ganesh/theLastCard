@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { RouterLink ,Router} from '@angular/router';
 import { GameSocket } from '../../services/socket-client/game-socket';
 import { MessageService } from 'primeng/api';
@@ -21,9 +21,9 @@ interface Room {
 @Component({
   selector: 'app-lobby',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink,Toast],
+  imports: [CommonModule, FormsModule, RouterLink,Toast,ReactiveFormsModule],
   templateUrl: './lobby.html',
-  styleUrls: ['./lobby.scss'] // Reusing common animations
+  styleUrls: [] // Reusing common animations
 })
 export class LobbyComponent {
     private routerLink=inject(Router);
@@ -37,7 +37,7 @@ export class LobbyComponent {
   
   // User Info (Mock)
   currentUser = {
-    name: 'Jatin',
+    name: 'User name',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jatin&backgroundColor=b6e3f4',
     level: 12,
     wins: 45

@@ -15,12 +15,13 @@ import {
   animate
 } from '@angular/animations';
 import { Sign } from 'crypto';
+import { Spinner } from '../spinner/spinner';
  
 
 @Component({
   selector: 'app-game-room',
   standalone: true,
-  imports: [CommonModule,CardCompnent,Leaderboard],
+  imports: [CommonModule,CardCompnent,Leaderboard,Spinner],
   templateUrl: './game.html',
   styleUrls: ['./game.scss'],
    animations: [
@@ -40,7 +41,7 @@ import { Sign } from 'crypto';
 
       
       transition(':leave', [ 
-        animate('1000ms ease-in', style({
+        animate('600ms ease-in', style({
           opacity: 0,
           transform: 'translate({{x}}px, {{y}}px) scale(0.8) rotate(45deg)'
         }))
@@ -101,7 +102,7 @@ lastDiscardVector = { x: 0, y: 0 };
   isUnoSaid=signal<boolean>(true);
   playerName=signal<string>("Me");
   avatarId=signal<string>("2");
-  isEnd=signal<boolean>(false);
+  isEnd=signal<boolean>(true);
   gameResult=signal<UnoGame|undefined>(undefined);
   playerId=signal<string>('');
 
@@ -317,18 +318,7 @@ onColorSelect(color:COLORS)
 
 
 
-// playCard(card: any, cardEl: HTMLElement) {
-//   const cardRect = cardEl.getBoundingClientRect();
-//   const discardRect = this.discardPile.nativeElement.getBoundingClientRect();
 
-//   this.lastDiscardVector = {
-//     x: discardRect.left - cardRect.left,
-//     y: discardRect.top - cardRect.top
-//   };
-
-//   // remove card from state AFTER computing delta
-//   this.myHand.update(hand => hand.filter(c => c.id !== card.id));
-// }
 
 
 

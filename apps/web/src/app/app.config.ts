@@ -8,7 +8,7 @@ import Aura from '@primeuix/themes/aura';
 import { MessageService } from 'primeng/api';
 import { SocketIoConfig, provideSocketIo } from 'ngx-socket-io';
 
-const config: SocketIoConfig = { url: 'http://localhost:3002', options: {
+const config: SocketIoConfig = { url: 'https://qd89949c-3002.inc1.devtunnels.ms/', options: {
   transports: ['websocket'],
   withCredentials:true,
   autoConnect: false

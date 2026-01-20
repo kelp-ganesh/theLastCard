@@ -145,7 +145,7 @@ export class UnoGame {
         else if(card.value === "draw-two" )
         {
           this.pendingAction={Type:"drawTwo",count:2};
-            this.currentPlayerIndex=(((this.currentPlayerIndex+this.direction)%this.players.length)+this.players.length)%this.players.length;
+          this.currentPlayerIndex=(((this.currentPlayerIndex+this.direction)%this.players.length)+this.players.length)%this.players.length;
           this.discardPile.unshift(card);
 
           return "draw-two";
@@ -201,6 +201,7 @@ export class UnoGame {
           this.players[this.currentPlayerIndex]!.Hand.push(this.drawPile.pop()!);
           this.players[this.currentPlayerIndex]!.Hand.push(this.drawPile.pop()!);
           this.currentPlayerIndex=(((this.currentPlayerIndex+this.direction)%this.players.length)+this.players.length)%this.players.length;
+          this.pendingAction={Type:"none",count:0};
 
       }
 
@@ -309,19 +310,19 @@ export class UnoGame {
 
       onUno(player:Player)
       {
-        if(player.index == this.direction && player.Hand.length ==1 && !player.isUnoSaid)
+        if(player.index == this.currentPlayerIndex && !player.isUnoSaid)
         {
           player.isUnoSaid=true;
         }
       }
 
-      getStateForLeaderboard(player:Player)
-      {
-          if(this.isEnd)
-          {
-            return 
-          }
-      }
+      // getStateForLeaderboard(player:Player)
+      // {
+      //     if(this.isEnd)
+      //     {
+      //       return 
+      //     }
+      // }
     }
 
 
