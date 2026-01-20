@@ -23,13 +23,23 @@
     {
         <app-spinner/> 
     }
+    @if(isEnd())
+   { <!-- { updated here -->
+      <div class=" fixed h-screen w-full z-50">
+      <app-leaderboard [players]="gameResult()!.players " ></app-leaderboard>
+      </div>
+    }
 
 <div class="h-screen w-full bg-slate-900 overflow-hidden flex flex-col relative">
 
   <div class="flex-1 relative flex items-center justify-center">
     
     <div class="absolute inset-0 pointer-events-none mt-48">
-      <div *ngFor="let player of opponents(); let i = index"
+      @for(player of opponents();track $index; let i = $index)
+      {
+
+      
+      <div  
            class="absolute transition-all duration-500"
             
            [ngStyle]="getOpponentStyle(i, opponents().length)">
@@ -55,11 +65,9 @@
              </div>
            </div>
       </div>
-    </div>
-    @if(isEnd())
-    {
-      <app-leaderboard [players]="gameResult()!.players " ></app-leaderboard>
     }
+    </div>
+    
     <div class="relative z-10 flex items-center gap-8">
       
       <div  #drawDeck (click)="drawCard()" 

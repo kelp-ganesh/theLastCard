@@ -58,12 +58,12 @@ export class GameRoomComponent {
   activeContext=signal<COLORS>('GREEN');
   allowchangeContextPlayerIndex=signal<boolean>(false);
   chnageContextColors=signal<boolean>(false);
-  isGameEnd=signal<boolean>(false);
+   
   isLoading=signal<boolean>(false);
   drawnCard=signal<Card|undefined>(undefined);
-@ViewChild('discardPile', { read: ElementRef })
-discardPile!: ElementRef<HTMLElement>;
-drawnCardHTML=signal<HTMLElement|undefined>(undefined);
+  @ViewChild('discardPile', { read: ElementRef })
+  discardPile!: ElementRef<HTMLElement>;
+  drawnCardHTML=signal<HTMLElement|undefined>(undefined);
 
 
 lastDiscardVector = { x: 0, y: 0 };
@@ -111,17 +111,11 @@ lastDiscardVector = { x: 0, y: 0 };
   getPositionClass(pos: string): string {
 
   switch (pos) {
-
     case 'top':       return 'top-4 left-1/2 -translate-x-1/2';
-
     case 'left':      return 'left-4 top-1/2 -translate-y-1/2 flex-row-reverse'; 
-
     case 'right':     return 'right-4 top-1/2 -translate-y-1/2 flex-row';
-
     case 'top-left':  return 'top-10 left-20';
-
     case 'top-right': return 'top-10 right-20';
-
     default: return '';
 
   }
@@ -166,7 +160,7 @@ lastDiscardVector = { x: 0, y: 0 };
         this.isUnoSaid.set(data.state.isUnoSaid);
         this.isEnd.set(data.state.isEnd);
        
-        console.log("isGame end: ",this.isEnd())
+        //console.log("isGame end: ",this.isEnd())
          if(this.isEnd())
       {
         this.socketService.gameEnds();
@@ -202,24 +196,25 @@ lastDiscardVector = { x: 0, y: 0 };
 
   drawCard() {
     if (!this.isMyTurn()) return;
-    console.log('Drawing a card...');
+    //console.log('Drawing a card...');
     this.socketService.drawCard();
   }
 
   playCard(card: Card , cardEl: HTMLElement) {
     if (!this.isMyTurn()) return;
-    console.log('Playing:', card);
+    //console.log('Playing:', card);
     this.drawnCard.set(card);
     this.drawnCardHTML.set(cardEl)
     this.socketService.submitCard({ card});
     const discardRect = this.discardPile.nativeElement.getBoundingClientRect();
-        const cardRect = this.drawnCardHTML()!.getBoundingClientRect();
-        console.log(  "cordinates of pixel" , discardRect.left-cardRect.left,
-            discardRect.top - cardRect.top);
-        this.lastDiscardVector = {
-            x: discardRect.left - cardRect.left,
-            y: discardRect.top - cardRect.top
-          };
+    const cardRect = this.drawnCardHTML()!.getBoundingClientRect();
+    //console.log(  "cordinates of pixel" , discardRect.left-cardRect.left,
+    //discardRect.top - cardRect.top);
+    this.lastDiscardVector = 
+    {
+      x: discardRect.left - cardRect.left,
+      y: discardRect.top - cardRect.top
+    };
    
    
       

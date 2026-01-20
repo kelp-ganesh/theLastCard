@@ -35,6 +35,7 @@ export class GameSocket {
     if (token) {
       this.socket.ioSocket.auth = { token };
       this.socket.connect();
+      // console.log("sokcet id: " +this.socket.ioSocket);
       return true;
     }
     else

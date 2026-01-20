@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import {SIGNUP_REQUEST_TYPE} from 'interfaces'
 
 @Injectable({
   providedIn: 'root',

@@ -47,6 +47,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
   getGameState(client:string):GAME_STATE[]
   {
     const game=this.Games.find((game)=>game.players.some((player)=>player.socketId==client));
+
     const res:GAME_STATE[]=[];
     const opponents:opponent[]=[]
     game?.players.forEach((player,index)=>{
@@ -447,6 +448,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
             
 
             client.emit("GAME_RESULT", {state:game,playerId:player.Userid});
+
+
+            this.Games.filter((g)=>g.id == game.id);
           
             // sockets.forEach((value)=>{
             //   this.server.to(value).emit("GAME_STATE", {state:game.players})
@@ -454,7 +458,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
      
         }
       }
-
+ // how to stop page to refresh so game connected via websocket wont get disconnect temp sol
 
     
                

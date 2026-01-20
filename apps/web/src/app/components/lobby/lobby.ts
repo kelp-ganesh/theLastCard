@@ -45,6 +45,7 @@ export class LobbyComponent {
   
   ngOnInit() {
       const connect=this.sokcetService.connect();
+      
       if(!connect)
       { 
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Auth Failed' });
@@ -118,14 +119,8 @@ export class LobbyComponent {
   username=signal("user")
   avatarId=signal('');
 
-  // Mock Data: Active Rooms
   rooms = signal<Room[]>([
-    // { id: '1', name: "Friday Night Uno!", host: 'Alex', hostAvatar: 'p1', players: 3, maxPlayers: 5, status: 'WAITING', isPrivate: false },
-    // { id: '2', name: "Pro Players Only", host: 'Sarah', hostAvatar: 'p2', players: 4, maxPlayers: 4, status: 'PLAYING', isPrivate: false },
-    // { id: '3', name: "Jatin's Lounge", host: 'Jatin', hostAvatar: 'Jatin', players: 1, maxPlayers: 8, status: 'WAITING', isPrivate: true },
-    // { id: '4', name: "Lunch Break Quickie", host: 'Mike', hostAvatar: 'p4', players: 2, maxPlayers: 2, status: 'WAITING', isPrivate: false },
-    // { id: '5', name: "No Wilds Allowed", host: 'Priya', hostAvatar: 'p5', players: 5, maxPlayers: 6, status: 'PLAYING', isPrivate: false },
-    // { id: '6', name: "Late Night Chill", host: 'Sam', hostAvatar: 'p6', players: 2, maxPlayers: 10, status: 'WAITING', isPrivate: false },
+    
   ]);
 
   // Actions

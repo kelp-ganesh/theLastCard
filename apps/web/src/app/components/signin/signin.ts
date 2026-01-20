@@ -11,7 +11,7 @@ import { Toast } from "primeng/toast";
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, Toast],
   templateUrl: './signin.html',
-  styleUrls: ['./signin.scss']
+  styleUrls: []
 })
 export class SigninComponent {
    private authService=inject(HttpService);

@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, Toast, Button],
   templateUrl: './signup.html',
-  styleUrls: ['./signup.scss']
+  styleUrls: []
 })
 export class SignupComponent {
    
