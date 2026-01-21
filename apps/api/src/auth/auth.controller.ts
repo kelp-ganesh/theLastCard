@@ -14,7 +14,7 @@ export class AuthController {
     try
   {  
    const player= this.authService.create(signupDto);
-   console.log("player made :"+ player);
+   
   }
   catch (error){
     console.error('Error creating user:', error);

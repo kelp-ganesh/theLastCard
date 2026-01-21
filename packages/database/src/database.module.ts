@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
-import { ConfigService } from '@nestjs/config';
 import { PlayerModel } from './models/player.model';
 
 @Module({
@@ -10,9 +9,9 @@ import { PlayerModel } from './models/player.model';
       isGlobal: true, 
     }),  
     SequelizeModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
+      imports: [],
+      inject: [],
+      useFactory: () => ({
         dialect: 'postgres',
         host: process.env.DB_HOST,
         port: parseInt(process.env.DB_PORT) || 5432,

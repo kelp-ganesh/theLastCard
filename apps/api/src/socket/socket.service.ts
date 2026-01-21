@@ -4,8 +4,5 @@ import { UpdateSocketDto } from './dto/update-socket.dto';
 
 @Injectable()
 export class SocketService {
-    
-     
-
-   
+       
 }

@@ -26,16 +26,15 @@ export class AuthService {
     const rec = await this.playerModel.findOne({ where: { email: loginDto.email } });
     const player = rec?.dataValues;
 
-    //const player={id:1,email:loginDto.email,password:"$2b$10$7QJfX6HAuX3m8mYIY5FhUuYkq1Kf5c7r0Hqz1Zs8eWzFh8b1KqzG2"}; 
-    console.log("player fetched:",player); 
+    
+     
     if (!player) {
       throw new Error('Player not found');
     }
-  console.log('loginDto.password:', loginDto.password);
-  console.log('player.password:', player.password);
+  
     const isPasswordValid = await bcrypt.compare(loginDto.password, player.password);
     if (!isPasswordValid) {
-      console.log("invalid password for player:",player.email);
+      //console.log("invalid password for player:",player.email);
       throw new Error('Invalid password');
     }
 

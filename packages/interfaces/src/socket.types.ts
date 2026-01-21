@@ -1,3 +1,4 @@
+ 
 import type constTypes = require("./const.types")
 
 export type JOIN_ROOM ={
@@ -13,7 +14,11 @@ export type CREATE_ROOM=
 export type  START_GAME={
     
 }
-//later imprort type from game-logic
+
+export type CHANGE_CONTEXT_COLOR={
+    color:constTypes.COLORS,
+}
+ 
 
 export type opponent={
         id:string,

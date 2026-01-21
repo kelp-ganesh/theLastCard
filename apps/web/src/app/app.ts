@@ -17,14 +17,5 @@ export class App {
         this.primeng.ripple.set(true);
     }
 
-  // @HostListener('window:keydown', ['$event'])
-  // blockRefresh(event: KeyboardEvent) {
-  //   if (
-  //     event.key === 'F5' ||
-  //     (event.ctrlKey && event.key.toLowerCase() === 'r') ||
-  //     (event.metaKey && event.key.toLowerCase() === 'r')
-  //   ) {
-  //     event.preventDefault();
-  //   }
-  // }
+  
 }

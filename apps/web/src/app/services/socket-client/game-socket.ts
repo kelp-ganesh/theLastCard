@@ -31,11 +31,11 @@ export class GameSocket {
   connect():boolean
   {
     const token = this.getTokenFromStorage();
-   // console.log("token " + token);
+    
     if (token) {
       this.socket.ioSocket.auth = { token };
       this.socket.connect();
-      // console.log("sokcet id: " +this.socket.ioSocket);
+      
       return true;
     }
     else
@@ -48,7 +48,7 @@ export class GameSocket {
 
 
   lobbyInit():void
-  { console.log("lobby_init method called");
+  {  
     this.socket.emit('LOBBY_INIT',{});
 
   }
@@ -89,7 +89,7 @@ export class GameSocket {
   }
 
   createRoom(room_Name:string,max_Players:number)
-  { console.log("req send from")
+  {  
     this.socket.emit('CREATE_ROOM',{room_name:room_Name,max_size:max_Players});
   }
 
@@ -127,13 +127,13 @@ export class GameSocket {
  }
 
  onUno()
- { console.log("uno said form socket");
+ {  
   this.socket.emit("Uno_said");
  }
 
   gameInit()
   {
-    this.socket.emit("GAME_INIT",{});
+    this.socket.emit("GAME_INIT");
   }
 
   submitColor(color:string)

@@ -48,13 +48,12 @@ export class LobbyComponent {
              this.routerLink.navigate(['/signup']);
             }, 1500);
       }
-      console.log("socket Connected");
+    
       this.sokcetService.lobbyInit(); 
       this.lobbySub = this.sokcetService.onLobbyUpdate('lobby_update')
       .subscribe({
         next: (data) => {
-          console.log('Lobby update received:', data.lobby);
-          console.log("player info in loby state: ",data.player);
+         
           const player=data.player;
           if(player)
           {
@@ -109,7 +108,7 @@ export class LobbyComponent {
   }
 
   onLogout() {
-    console.log('Logging out...');
+    
     localStorage.removeItem('authToken');
     this.routerLink.navigate(['/']);
     this.sokcetService.disconnect();
@@ -117,15 +116,14 @@ export class LobbyComponent {
   }
 
   createRoom(name: string, max: string, isPrivate: boolean) {
-    console.log('Creating Room:', { name, max, isPrivate });
-    this.sokcetService.createRoom(name,+max);
+     this.sokcetService.createRoom(name,+max);
     this.joinedLobby.set('admin')
     this.toggleModal();
     
   }
 
   joinRoom(id: string) {
-    console.log('Joining Room:', id);
+    
     this.sokcetService.joinRoom(id);
     this.joinedLobby.set(id);
      

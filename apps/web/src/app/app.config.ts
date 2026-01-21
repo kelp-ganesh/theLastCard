@@ -7,8 +7,9 @@ import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { MessageService } from 'primeng/api';
 import { SocketIoConfig, provideSocketIo } from 'ngx-socket-io';
+import { environment } from '../environments/environment';
 
-const config: SocketIoConfig = { url: 'https://qd89949c-3002.inc1.devtunnels.ms/', options: {
+const config: SocketIoConfig = { url: environment.socketUrl, options: {
   transports: ['websocket'],
   withCredentials:true,
   autoConnect: false
