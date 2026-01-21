@@ -13,7 +13,7 @@ export type CREATE_ROOM=
 export type  START_GAME={
     
 }
- //later imprort type from game-logic
+//later imprort type from game-logic
 
 export type opponent={
         id:string,

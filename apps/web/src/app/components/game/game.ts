@@ -41,7 +41,7 @@ import { Spinner } from '../spinner/spinner';
 
       
       transition(':leave', [ 
-        animate('600ms ease-in', style({
+        animate('400ms ease-in', style({
           opacity: 0,
           transform: 'translate({{x}}px, {{y}}px) scale(0.8) rotate(45deg)'
         }))
@@ -132,6 +132,7 @@ lastDiscardVector = { x: 0, y: 0 };
     this.gameStateSub=this.socketService.onGameState("GAME_STATE")
     .subscribe({
       next:(data)=>{
+        console.log("we got game data from server");
         //console.log("game state updated"+data);
         this.direction.set((data.state.direction ==1)? "CW" : "CCW" );
         //console.log("direction :"+data.state.direction);
@@ -161,7 +162,7 @@ lastDiscardVector = { x: 0, y: 0 };
         this.isEnd.set(data.state.isEnd);
        
         //console.log("isGame end: ",this.isEnd())
-         if(this.isEnd())
+      if(this.isEnd())
       {
         this.socketService.gameEnds();
       }
@@ -188,6 +189,15 @@ lastDiscardVector = { x: 0, y: 0 };
         console.log("error while updating game result state")
       }
     })
+
+     const connect=this.socketService.connect();
+      
+      if(!connect)
+      { 
+        
+        console.log("socket is not connected")
+      }
+      console.log("socket is Connected");
     
   }
   

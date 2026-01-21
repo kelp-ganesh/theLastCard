@@ -35,13 +35,8 @@ export class LobbyComponent {
   constructor
   ( private sokcetService:GameSocket ) {}
   
-  // User Info (Mock)
-  currentUser = {
-    name: 'User name',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jatin&backgroundColor=b6e3f4',
-    level: 12,
-    wins: 45
-  };
+  
+ 
   
   ngOnInit() {
       const connect=this.sokcetService.connect();
@@ -55,19 +50,6 @@ export class LobbyComponent {
       }
       console.log("socket Connected");
       this.sokcetService.lobbyInit(); 
-     //console.log("joined lobby:  "+this.joinedLobby())
-
-    
-
-      // Listen for room creation response
-      // this.roomCreatedSub = this.sokcetService.onRoomCreated().subscribe({
-      //   next: (data) => {
-      //     console.log('Room created successfully:', data);
-      //     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Room created!' });
-      //   },
-      //   error: (err) => console.error('Room creation error:', err)
-      // });
-
       this.lobbySub = this.sokcetService.onLobbyUpdate('lobby_update')
       .subscribe({
         next: (data) => {
@@ -112,18 +94,16 @@ export class LobbyComponent {
         }
       })
   }
-  // UI State
+  
   showCreateModal = signal(false);
   searchQuery = signal('');
   joinedLobby=signal('');
   username=signal("user")
-  avatarId=signal('');
+  avatarId=signal('1');
 
-  rooms = signal<Room[]>([
-    
-  ]);
+  rooms = signal<Room[]>([]);
 
-  // Actions
+
   toggleModal() {
     this.showCreateModal.update(v => !v);
   }

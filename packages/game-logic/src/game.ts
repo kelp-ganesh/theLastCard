@@ -2,11 +2,10 @@ import type { COLORS } from "interfaces";
 import { Card } from "./card.js";
 import { Deck } from "./deck.js";
 import { Player } from "./player.js";
-import { isImportEqualsDeclaration } from "typescript";
 
 export class UnoGame {
   name:string
-   id:string;
+  id:string;
   players: Player[] = [];
   drawPile: Card[] = [];
   discardPile: Card[] = [];
@@ -17,14 +16,11 @@ export class UnoGame {
   pendingAction: { Type: "drawTwo" | "none" | "skip"; count: number };
 
   //drawn card in the turn which should be equed to false after each turn
-    cardDrawn:boolean=false;
-    drawnCard:Card|undefined;
+  cardDrawn:boolean=false;
+  drawnCard:Card|undefined;
 
-    allowchangeContextPlayerIndex:number=-1;
-    isEnd:boolean=false;
-
-
-
+  allowchangeContextPlayerIndex:number=-1;
+  isEnd:boolean=false;
 
 
     constructor(players:Player[],name:string)
@@ -44,18 +40,14 @@ export class UnoGame {
           for(let i=0;i<players.length;i++)
           {
             players[i]!.Hand=cards.slice(7*i,7*(i+1));
-           // console.log("dealt cards to player "+i+" :",players[i]!.Hand);
             players[i]!.index=i;
           }
 
           let lastCardIndex:number=players.length*7;
-          //this.activeContext=cards[lastCardIndex]?.color;
 
           this.discardPile.push(cards[lastCardIndex]!);
           this.activeContext=this.discardPile[0]!.color;
           this.drawPile=cards.slice(lastCardIndex+1,cards.length);
-
-          //this.show();
 
     }
 
@@ -79,20 +71,11 @@ export class UnoGame {
                 {
                   this.players[this.currentPlayerIndex]!.Hand.push(this.drawPile.pop()!);
                 }
+                 this.activeContext=this.discardPile[0]!.color;
               }
         this.pendingAction={Type:"none",count:0};
-        this.activeContext=this.discardPile[0]!.color;
-
-      this.currentPlayerIndex=(((this.currentPlayerIndex+this.direction)%this.players.length)+this.players.length)%this.players.length;
-      return {
-        players:this.players,
-        currentPlayerIndex:this.currentPlayerIndex,
-        direction:this.direction,
-        drawPile:this.drawPile,
-        discardPile:this.discardPile,
-        activeContext:this.activeContext,
-        pendingAction:this.pendingAction
-      }
+       
+        this.currentPlayerIndex=(((this.currentPlayerIndex+this.direction)%this.players.length)+this.players.length)%this.players.length;
     }
 
     isValidMatch(card1:Card,card2:Card)
@@ -112,16 +95,11 @@ export class UnoGame {
       if(player.index === this.currentPlayerIndex && !this.cardDrawn )
       {
         const card= this.drawPile.pop();
-        console.log("poped card:",card);
+       //pushing drawn card to players hand card
         player.Hand.push(card!);
         this.drawnCard=card;
         this.cardDrawn=true;
         player.isUnoSaid=false;
-        //this.discardPile.unshift(card!);
-
-        
-
-       
       }
       else
       {
@@ -134,8 +112,8 @@ export class UnoGame {
         if(card.value === "skip")
         {
           //currentINdex+=2;
-            this.currentPlayerIndex=(((this.currentPlayerIndex+(this.direction*2))%this.players.length)+this.players.length)%this.players.length;
-            this.activeContext=card.color;
+          this.currentPlayerIndex=(((this.currentPlayerIndex+(this.direction*2))%this.players.length)+this.players.length)%this.players.length;
+          this.activeContext=card.color;
           this.discardPile.unshift(card);
           return "skip";
         }
@@ -189,10 +167,7 @@ export class UnoGame {
          
           return "wild-draw-four";
         }
-        // else
-        // {
-        //   console.log("Normal Card");
-        // }
+        
     }
 
     changeActiveContext(color:COLORS ,player:Player)
@@ -200,21 +175,16 @@ export class UnoGame {
       if(player.index === this.currentPlayerIndex && this.discardPile[0]!.value === "wild" || this.discardPile[0]!.value === "wild-draw-four")
       {
         this.activeContext=color;
-         this.allowchangeContextPlayerIndex=-1;
+        this.allowchangeContextPlayerIndex=-1;
       }
       if(this.pendingAction.Type == "none")
       { 
         this.currentPlayerIndex=(((this.currentPlayerIndex+this.direction)%this.players.length)+this.players.length)%this.players.length;
-
-       
-       
-        
       }
       if(this.pendingAction.Type === "drawTwo")
       {   
            
           this.currentPlayerIndex=(((this.currentPlayerIndex+this.direction)%this.players.length)+this.players.length)%this.players.length;
-
           this.players[this.currentPlayerIndex]!.Hand.push(this.drawPile.pop()!);
           this.players[this.currentPlayerIndex]!.Hand.push(this.drawPile.pop()!);
           this.players[this.currentPlayerIndex]!.Hand.push(this.drawPile.pop()!);
@@ -230,25 +200,22 @@ export class UnoGame {
     submitToDiscarded(card:Card,player:Player)
     {  this.cardDrawn=false;
       if(player.index === this.currentPlayerIndex)
-      {   //this.checkPendingAction();
+      {    
         if(this.cardDrawn && card===this.drawnCard || !this.cardDrawn)
-        {//console.log("3")
+        { 
             
             if(this.isValidMatch(card,this.discardPile[0]!))
             
-            {   //console.log("4")
-              
-            //  const c=player.Hand.splice(player.Hand.indexOf(card),1);
-            //  console.log("index of removed card: ",player.Hand.indexOf(card));
-            //  console.log("removed card: ",c[0]?.id);
+            {  
 
               player.Hand=player.Hand.filter((c)=>c.id !=card.id );
               if(player.Hand.length == 0)
               {
                 this.isEnd=true;
               }
-              console.log(player.Hand);
-              // player.Hand.filter((c)=>c.id!=card.id);
+              //console.log(player.Hand);
+               
+
               if(card.value !=="skip" && card.value !=="reverse" && card.value !=="draw-two" && card.value !=="wild" && card.value !=="wild-draw-four")
               {
                 this.activeContext=card.color;
@@ -259,53 +226,27 @@ export class UnoGame {
               }
               else
               {
-                const result=this.cardSubmitted(card);
-                return {
-                  players:this.players,
-                  currentPlayerIndex:this.currentPlayerIndex,
-                  direction:this.direction,
-                  drawPile:this.drawPile,
-                  discardPile:this.discardPile,
-                  activeContext:this.activeContext,
-                  pendingAction:this.pendingAction,
-                  allowchangeContextPlayerIndex:this.allowchangeContextPlayerIndex
-                }
-
-
-              }
-             // this.discardPile.unshift(card);
-            }
-            // if(this.pendingAction.Type !== "none")
-            // {  
-            //   if(this.pendingAction.Type === "drawTwo")
-            //   {
-            //     for(let i=0;i<this.pendingAction.count;i++)
-            //     {
-            //       this.players[this.currentPlayerIndex]!.Hand.push(this.drawPile.pop()!);
-            //     }
-            //   }
-            //   this.pendingAction={Type:"none",count:0};
-            //   this.currentPlayerIndex=(this.currentPlayerIndex+1*this.direction)%this.players.length;
-            //   return {
-            //     players:this.players,
-            //     currentPlayerIndex:this.currentPlayerIndex,
-            //     direction:this.direction,
-            //     drawPile:this.drawPile,
-            //     discardPile:this.discardPile,
-            //     activeContext:this.activeContext,
-            //     pendingAction:this.pendingAction,
-            //     allowchangeContextPlayerIndex:this.allowchangeContextPlayerIndex
-            //   }
-            // }
-
-            //check for pending action
-            //upadate currentIndex
-          }
-          else
-          {
-            return "Not Valid Move";
-          }
+                this.cardSubmitted(card);
+                // return {
+                //   players:this.players,
+                //   currentPlayerIndex:this.currentPlayerIndex,
+                //   direction:this.direction,
+                //   drawPile:this.drawPile,
+                //   discardPile:this.discardPile,
+                //   activeContext:this.activeContext,
+                //   pendingAction:this.pendingAction,
+                //   allowchangeContextPlayerIndex:this.allowchangeContextPlayerIndex
+                // }
+           }
+             
         }
+            
+    }
+    else
+    {
+      return "Not Valid Move";
+    }
+    }
         
       }
 
@@ -345,15 +286,7 @@ export class UnoGame {
           player.isUnoSaid=true;
         }
       }
-
-      // getStateForLeaderboard(player:Player)
-      // {
-      //     if(this.isEnd)
-      //     {
-      //       return 
-      //     }
-      // }
-    }
+}
 
 
 

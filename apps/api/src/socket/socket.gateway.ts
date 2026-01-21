@@ -16,6 +16,7 @@ import type { JOIN_ROOM ,CREATE_ROOM,START_GAME,GAME_STATE,opponent, COLORS} fro
 import { AuthGuard ,} from '@nestjs/passport';
 import { PlayerModel } from 'database';
 import { InjectModel } from '@nestjs/sequelize';
+import { ConfigService } from '@nestjs/config';
 
 
 @WebSocketGateway(3002,{
@@ -34,15 +35,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
   constructor( @InjectModel(PlayerModel)
       private playerModel: typeof PlayerModel, 
-      private jwt: JwtService)
-  {
-    
-  }
+      private jwt: JwtService,
+      private configService:ConfigService)
+     {
+     }
 
-  sendToLobby(player:Player,gameId:string,toUser:boolean,)
-  {
-    
-  }
+ 
   
   getGameState(client:string):GAME_STATE[]
   {
@@ -128,18 +126,53 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
       const payload = this.jwt.verify(token);
       client.user = payload;
       const playerInfo= await this.playerModel.findOne({where: {email:client.user.email}});
-      console.log("PlayerInfo: "+playerInfo?.dataValues);
+      //console.log("PlayerInfo: "+playerInfo?.dataValues);
       console.log("playerINfo values" + playerInfo?.dataValues.name+ "  "+ playerInfo?.dataValues.avatarId)
      // console.log("user with id "+client.id+typeof(client.id)+" connected" + " and user info:",payload);
+
+      // const existing_user=this.activeUsers.find((p)=> p.Userid == client.user.userId && p.gameId !='');
+      // console.log("info of existing user: "+existing_user?.Username+" "+client?.id)
+      // const gameState:GAME_STATE[]=this.getGameState(existing_user!.socketId);
+      //   const userGameState:GAME_STATE|undefined=gameState.find((g)=>g.playerName == existing_user?.Username)
+      //   console.log("game to reconnet found: ",userGameState?.roomName);
+      // if(existing_user && userGameState)
+      // { console.log("first");
+      //   existing_user.socketId=client?.id;
+      //   console.log("updating sokcet id of exisiting user",existing_user.Username);
+      //   this.server.to(existing_user.socketId).emit("GAME_STATE", {state:userGameState})
+
+      // }
+      // else
+      // {
+      // const player:Player=new Player(client.user.userId,playerInfo!.dataValues.name,client.id,playerInfo!.dataValues.avatarId);
+      // this.activeUsers.push(player);
+      // //console.log("new Player with "+ client.user.name + "is added");
+      // // for(let i=0;i<this.activeUsers.length;i++)
+      // // {
+      // //   console.log("active user "+" :"+this.activeUsers[i]!.Username+" User Id: "+this.activeUsers[i]!.avatarId);
+      // // }
+      // client.emit('lobby_update', { lobby: this.Lobby,player:player });
+      // //console.log("from handleconnection"+ player.Username)
+      // }
       const player:Player=new Player(client.user.userId,playerInfo!.dataValues.name,client.id,playerInfo!.dataValues.avatarId);
       this.activeUsers.push(player);
-      console.log("new Player with "+ client.user.name + "is added");
-      for(let i=0;i<this.activeUsers.length;i++)
-      {
-        console.log("active user "+" :"+this.activeUsers[i]!.Username+" User Id: "+this.activeUsers[i]!.avatarId);
-      }
+      //console.log("new Player with "+ client.user.name + "is added");
+      // for(let i=0;i<this.activeUsers.length;i++)
+      // {
+      //   console.log("active user "+" :"+this.activeUsers[i]!.Username+" User Id: "+this.activeUsers[i]!.avatarId);
+      // }
       client.emit('lobby_update', { lobby: this.Lobby,player:player });
-      console.log("from handleconnection"+ player.Username)
+      //console.log("from handleconnection"+ player.Username)
+
+
+
+
+
+
+
+
+
+      
     } catch {
       client.disconnect();
     }
